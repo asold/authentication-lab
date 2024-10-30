@@ -1,9 +1,9 @@
-package com.authentication.printer;
+package interfaces;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface Test extends Remote{
+public interface IPrinter extends Remote{
     
     public String ping() throws RemoteException;
 }
