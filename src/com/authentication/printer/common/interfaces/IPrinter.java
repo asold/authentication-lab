@@ -3,8 +3,10 @@ package interfaces;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+import com.authentication.printer.server.helpers.Token;
+
 public interface IPrinter extends Remote{
-    
+    public Token login(String username, String password) throws RemoteException;
     public String ping() throws RemoteException;
     public String print(String filename, String printer) throws RemoteException;
     public String queue(String printer) throws RemoteException;

@@ -4,6 +4,9 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 import com.authentication.printer.server.helpers.ILogger;
+import com.authentication.printer.server.helpers.Token;
+
+import interfaces.IAuth;
 import interfaces.IPrinter;
 
 import java.util.LinkedList;
@@ -15,11 +18,13 @@ public class PrinterRunner extends UnicastRemoteObject implements IPrinter {
     private Queue<String> jobQueue = new LinkedList<>();
     private boolean isRunning = false;
     private String configuration;
+    private IAuth authenticationService;
 
     public PrinterRunner(ILogger logger) throws RemoteException {
         super();
         this.logger = logger; 
         this.configuration = "default";
+        this.authenticationService = new Auth();
     }
 
     private String name;
@@ -86,5 +91,13 @@ public class PrinterRunner extends UnicastRemoteObject implements IPrinter {
         this.configuration = value;
         this.logger.logMessageToConsole("setConfig", "Setting configuration: " + parameter + " = " + value);
         return "Configuration set: " + parameter + " = " + value;
+    }
+
+    @Override
+    public Token login(String username, String password) throws RemoteException {
+        if (authenticationService.authenticate(username, password)){
+            return new Token("hi");
+        }
+        return null;
     }
 }
