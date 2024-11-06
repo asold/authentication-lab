@@ -1,6 +1,8 @@
 package com.authentication.printer.server.helpers;
 
-public class Token {
+import java.io.Serializable;
+
+public class Token implements Serializable{
     
     private String token;
     
