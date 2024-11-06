@@ -6,3 +6,4 @@ secrets.txt
 
 # Ignore Gradle build output directory
 build
+/.metadata/
