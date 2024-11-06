@@ -5,5 +5,5 @@ import java.rmi.RemoteException;
 
 public interface IAuth extends Remote {
     public boolean Authenticate(String username, String password) throws RemoteException;
-    
+    public boolean AuthorizeJWT(String username) throws RemoteException; 
 }
