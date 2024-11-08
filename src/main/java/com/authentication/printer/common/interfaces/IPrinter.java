@@ -7,15 +7,15 @@ import com.authentication.printer.server.helpers.Token;
 
 public interface IPrinter extends Remote{
     public Token login(String username, String password) throws RemoteException;
-    public String ping() throws RemoteException;
-    public String print(String filename, String printer) throws RemoteException;
-    public String queue(String printer) throws RemoteException;
-    public void topQueue(String printer, int job) throws RemoteException;
-    public void start() throws RemoteException;
-    public void stop() throws RemoteException;
-    public void restart() throws RemoteException;
-    public String status() throws RemoteException;
-    public String readConfig(String parameter) throws RemoteException;
-    public String setConfig(String parameter, String value) throws RemoteException;
+    public String ping(Token token) throws RemoteException;
+    public String print(String filename, String printer, Token token) throws RemoteException;
+    public String queue(String printer, Token token) throws RemoteException;
+    public void topQueue(String printer, int job, Token token) throws RemoteException;
+    public void start(Token token) throws RemoteException;
+    public void stop(Token token) throws RemoteException;
+    public void restart(Token token) throws RemoteException;
+    public String status(Token token) throws RemoteException;
+    public String readConfig(String parameter, Token token) throws RemoteException;
+    public String setConfig(String parameter, String value, Token token) throws RemoteException;
 
 }

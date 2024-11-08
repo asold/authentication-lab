@@ -34,76 +34,112 @@ public class PrinterRunner extends UnicastRemoteObject implements IPrinter {
 
     private String name;
 
-    public String ping() throws RemoteException {
-        this.logger.logMessageToConsole("ping", "Ping requested, responding with pong");
-        return "pong";
+    public String ping(Token token) throws RemoteException {
+        if(sessionManagementService.validateSessionToken(token)){
+            this.logger.logMessageToConsole("ping", "Ping requested, responding with pong");
+            return "pong";
+        }
+        return "Invalid token";
     }
 
     @Override
-    public String print(String filename, String printer) throws RemoteException {
-        this.logger.logMessageToConsole("print", "The file " + filename + " will be printed on printer " + printer);
-        this.jobQueue.add(filename);
-        return "The file " + filename + " will be printed on printer " + printer;
+    public String print(String filename, String printer, Token token) throws RemoteException {
+        if (sessionManagementService.validateSessionToken(token)) {
+            this.logger.logMessageToConsole("print", "The file " + filename + " will be printed on printer " + printer);
+            this.jobQueue.add(filename);
+            return "The file " + filename + " will be printed on printer " + printer;
+        } else {
+            return "Invalid token";
+        }
     }
 
     @Override
-    public String queue(String printer) throws RemoteException {
-        this.logger.logMessageToConsole("queue", "Queue for printer " + printer + " requested");
-        return this.jobQueue.toString();
+    public String queue(String printer, Token token) throws RemoteException {
+        if (sessionManagementService.validateSessionToken(token)) {
+            this.logger.logMessageToConsole("queue", "Queue for printer " + printer + " requested");
+            return this.jobQueue.toString();
+        } else {
+            return "Invalid token";
+        }
     }
 
     @Override
-    public void topQueue(String printer, int job) throws RemoteException {
-        this.logger.logMessageToConsole("topQueue", "Moving job " + job + " to the top of the queue for printer " + printer);
-        String jobToPromote = ((LinkedList<String>) this.jobQueue).remove(job);
-        ((LinkedList<String>) this.jobQueue).addFirst(jobToPromote);
+    public void topQueue(String printer, int job, Token token) throws RemoteException {
+        if (sessionManagementService.validateSessionToken(token)) {
+            this.logger.logMessageToConsole("topQueue", "Moving job " + job + " to the top of the queue for printer " + printer);
+            String jobToPromote = ((LinkedList<String>) this.jobQueue).remove(job);
+            ((LinkedList<String>) this.jobQueue).addFirst(jobToPromote);
+        } else {
+            this.logger.logMessageToConsole("topQueue", "Invalid token");
+        }
     }
 
     @Override
-    public void start() throws RemoteException {
-        this.isRunning = true;
-        this.logger.logMessageToConsole("start", "Printer started");
+    public void start(Token token) throws RemoteException {
+        if (sessionManagementService.validateSessionToken(token)) {
+            this.isRunning = true;
+            this.logger.logMessageToConsole("start", "Printer started");
+        } else {
+            this.logger.logMessageToConsole("start", "Invalid token");
+        }
     }
 
     @Override
-    public void stop() throws RemoteException {
-        this.isRunning = false;
-        this.logger.logMessageToConsole("stop", "Printer stopped");
+    public void stop(Token token) throws RemoteException {
+        if (sessionManagementService.validateSessionToken(token)) {
+            this.isRunning = false;
+            this.logger.logMessageToConsole("stop", "Printer stopped");
+        } else {
+            this.logger.logMessageToConsole("stop", "Invalid token");
+        }
     }
 
     @Override
-    public void restart() throws RemoteException {
-        this.logger.logMessageToConsole("restart", "Printer restarting");
-        stop(); 
-        start(); 
+    public void restart(Token token) throws RemoteException {
+        if (sessionManagementService.validateSessionToken(token)) {
+            this.logger.logMessageToConsole("restart", "Printer restarting");
+            stop(token);
+            start(token);
+        } else {
+            this.logger.logMessageToConsole("restart", "Invalid token");
+        }
     }
 
     @Override
-    public String status() throws RemoteException {
-        String status = this.isRunning ? "Printer is running" : "Printer is stopped";
-        this.logger.logMessageToConsole("status", "Status requested: " + status);
-        return status;
+    public String status(Token token) throws RemoteException {
+        if (sessionManagementService.validateSessionToken(token)) {
+            String status = this.isRunning ? "Printer is running" : "Printer is stopped";
+            this.logger.logMessageToConsole("status", "Status requested: " + status);
+            return status;
+        } else {
+            return "Invalid token";
+        }
     }
 
     @Override
-    public String readConfig(String parameter) throws RemoteException {
-        this.logger.logMessageToConsole("readConfig", "Reading configuration for parameter: " + parameter);
-        return this.configuration;
+    public String readConfig(String parameter, Token token) throws RemoteException {
+        if (sessionManagementService.validateSessionToken(token)) {
+            this.logger.logMessageToConsole("readConfig", "Reading configuration for parameter: " + parameter);
+            return this.configuration;
+        } else {
+            return "Invalid token";
+        }
     }
 
     @Override
-    public String setConfig(String parameter, String value) throws RemoteException {
-        this.configuration = value;
-        this.logger.logMessageToConsole("setConfig", "Setting configuration: " + parameter + " = " + value);
-        return "Configuration set: " + parameter + " = " + value;
+    public String setConfig(String parameter, String value, Token token) throws RemoteException {
+        if (sessionManagementService.validateSessionToken(token)) {
+            this.configuration = value;
+            this.logger.logMessageToConsole("setConfig", "Setting configuration: " + parameter + " = " + value);
+            return "Configuration set: " + parameter + " = " + value;
+        } else {
+            return "Invalid token";
+        }
     }
-
     @Override
     public Token login(String username, String password) throws RemoteException {
         if (authenticationService.authenticate(username, password)){
-            System.out.println("username: " + username + " password: " + password);
             Token token = sessionManagementService.generateSessionToken(username);
-            System.out.println("!!!!!!!!!!!!!!!!!!" + token.getToken());
             return new Token(token.getToken());
         }
         return null;
