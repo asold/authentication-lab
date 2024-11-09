@@ -137,11 +137,13 @@ public class PrinterRunner extends UnicastRemoteObject implements IPrinter {
         }
     }
     @Override
-    public Token login(String username, String password) throws RemoteException {
+    public Token login(String username, String password) throws RemoteException, InvalidLoginException {
         if (authenticationService.authenticate(username, password)){
             Token token = sessionManagementService.generateSessionToken(username);
             return new Token(token.getToken());
         }
-        return null;
+        else {
+            throw new InvalidLoginException("Invalid login attempt: username or password is incorrect.");
+        }
     }
 }

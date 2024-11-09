@@ -7,11 +7,12 @@ import java.rmi.RemoteException;
 import java.util.Scanner;
 
 import com.authentication.printer.common.interfaces.IPrinter;
+import com.authentication.printer.server.InvalidLoginException;
 import com.authentication.printer.server.helpers.Token;
 
 
 public class Client {
-    public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException {
+    public static void main(String[] args) throws MalformedURLException, RemoteException, NotBoundException,InvalidLoginException {
         IPrinter server = (IPrinter) Naming.lookup("rmi://localhost:5099/print");
         String s = "1test";
         Scanner in = new Scanner(System.in);
