@@ -1,5 +1,4 @@
-package interfaces;
-
+package com.authentication.printer.common.interfaces;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
